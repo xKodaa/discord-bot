@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Discord;
+using Discord.WebSocket;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,33 +10,26 @@ namespace discord_bot.Bot.Utility
 {
     internal class Logger
     {
+        private static AppConfigHandler AppConfigHandler => AppConfigHandler.Instance;
+        public static DiscordSocketClient Client { get; set; }
+
         static Logger()
         {
         }
 
-        public static void Introduce(string channel) 
+        public static async Task Introduce() 
         {
-        
+            if (Client.GetChannel(AppConfigHandler.MainChannelID) is SocketTextChannel mainChannel)
+            {
+                await mainChannel.SendMessageAsync("Jebu ti babu zmrde");
+            }
+            await Task.CompletedTask;
         }
 
-        public static void WriteLog(string message)
+        public static Task LogAsync(LogMessage message)
         {
-            Console.WriteLine($"{DateTime.Now}: {message}");
+            Console.WriteLine($"{DateTime.Now}: {message.ToString()}");
+            return Task.CompletedTask;
         }
-        public static void WriteLog(string message, string user)
-        {
-            Console.WriteLine($"{DateTime.Now}: {user} - {message}");
-        }
-
-        public static void WriteErrorLog(string message)
-        {
-            Console.Error.WriteLine($"{DateTime.Now}: {message}");
-        }
-
-        public static void WriteErrorLog(string message, string user)
-        {
-            Console.Error.WriteLine($"{DateTime.Now}: {user} - {message}");
-        }
-
     }
 }
