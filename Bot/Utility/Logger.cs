@@ -6,41 +6,17 @@ namespace discord_bot.Bot.Utility
 {
     internal class Logger
     {
-        private static DiscordSocketClient? _client;
-        private static ConfigLoader? _configLoader;
+        private readonly DiscordSocketClient _client;
 
-        public Logger(DiscordSocketClient client, ConfigLoader config)
+        public Logger(DiscordSocketClient client)
         {
             _client = client;
-            _configLoader = config;
         }
 
-        public static async Task Introduce() 
-        {
-            if (_client == null || _configLoader == null) 
-            {
-                LogMessage(new LogMessage(LogSeverity.Error, nameof(Logger), "Client or ConfigLoader is null, cannot introduce so I'm shutting down"));
-                Environment.Exit(1);
-            }
-
-            if (_client.GetChannel(_configLoader.MainChannelID) is SocketTextChannel mainChannel)
-            {
-                await mainChannel.SendMessageAsync("Jebu ti babu zmrde");
-            }
-            await Task.CompletedTask;
-        }
-
-        public static void LogMessage(LogMessage message)
+        public Task LogAsync(LogMessage message)
         {
             SetConsoleColor(message.Severity);
-            Console.WriteLine($"{DateTime.Now} - [{message.Source}]\t{message.Message}");
-            ResetConsoleColor();
-        }
-
-        public static Task LogAsync(LogMessage message)
-        {
-            SetConsoleColor(message.Severity);
-            Console.WriteLine($"{DateTime.Now} - [{message.Source}]\t{message.Message}");
+            Console.WriteLine($"{DateTime.Now} - [{message.Source}]:\t{message.Message}");
             ResetConsoleColor();
             return Task.CompletedTask;
         }

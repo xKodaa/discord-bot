@@ -20,8 +20,8 @@ namespace discord_bot.Bot.Services
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            _client.Log += Logger.LogAsync;
-            _client.Ready += Logger.Introduce;
+            _client.Log += _logger.LogAsync;
+            _client.Ready += Introduce;
 
             await _client.LoginAsync(TokenType.Bot, _configLoader.Token);
             await _client.StartAsync();
@@ -30,6 +30,15 @@ namespace discord_bot.Bot.Services
         public Task StopAsync(CancellationToken cancellationToken)
         {
             return _client.StopAsync();
+        }
+
+        public async Task Introduce()
+        {
+            if (_client.GetChannel(_configLoader.MainChannelID) is SocketTextChannel mainChannel)
+            {
+                await mainChannel.SendMessageAsync("Gay");
+            }
+            await Task.CompletedTask;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using discord_bot.Bot.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,8 +18,16 @@ namespace discord_bot.Bot.Services
                 })
                 .ConfigureServices((context, services) =>
                 {
+                    services.AddSingleton(provider =>
+                    {
+                        var config = new DiscordSocketConfig
+                        {
+                            GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMessages // Only needed intents for my discord bot
+                        };
+                        return new DiscordSocketClient(config);
+                    });
+
                     services.AddSingleton<ConfigLoader>();
-                    services.AddSingleton<DiscordSocketClient>();
                     services.AddSingleton<Logger>();
                     services.AddHostedService<BotService>();
                 })
