@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace discord_bot.Bot.Utility
 {
-    internal class ConfigLoader
+    public class ConfigLoader
     {
         public string Token { get; private set; }
         public string Prefix { get; private set; }
@@ -16,6 +16,7 @@ namespace discord_bot.Bot.Utility
         public ulong SecondaryChannelID { get; private set; }
         private readonly Logger _logger;
 
+        // Class that loads configuration from appsettings.json
         public ConfigLoader(IConfiguration configuration, Logger logger)
         {
             Token = configuration["Token"] ?? throw new InvalidOperationException("Token is missing in the configuration.");

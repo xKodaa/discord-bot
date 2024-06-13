@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace discord_bot.Bot.Services
 {
-    internal class BotService : IHostedService
+    public class BotService : IHostedService
     {
         private readonly DiscordSocketClient _client;
         private readonly ConfigLoader _configLoader;
@@ -23,6 +23,7 @@ namespace discord_bot.Bot.Services
             _commandHandler = commandHandler;
         }
 
+        // StartAsync is called when the application starts via await host.RunAsync() in Program class;
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             _client.Log += _logger.LogAsync;
@@ -34,6 +35,7 @@ namespace discord_bot.Bot.Services
             await _client.StartAsync();
         }
 
+        // StopAsync is called when the application stops
         public Task StopAsync(CancellationToken cancellationToken)
         {
             return _client.StopAsync();

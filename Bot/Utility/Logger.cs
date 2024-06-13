@@ -4,7 +4,7 @@ using Discord.WebSocket;
 
 namespace discord_bot.Bot.Utility
 {
-    internal class Logger
+    public class Logger
     {
         private readonly DiscordSocketClient _client;
 
@@ -13,6 +13,7 @@ namespace discord_bot.Bot.Utility
             _client = client;
         }
 
+        // Custom log method that colors the console output based on the severity of the log message
         public Task LogAsync(LogMessage message)
         {
             SetConsoleColor(message.Severity);
