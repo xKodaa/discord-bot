@@ -9,14 +9,15 @@ namespace discord_bot.Bot.Commands.CommandHandler
     public class CommandHandler
     {
         private readonly DiscordSocketClient _client;
-        private readonly CommandService _commands;  // command handler, includes all commands registered
+        private readonly CommandService _commandService;  // command handler, includes all commands registered
         private readonly IServiceProvider _services;
         private readonly ConfigLoader _configLoader;
         private readonly Logger _logger;
+        private bool introduced;
 
         public CommandHandler(DiscordSocketClient client, CommandService commands, IServiceProvider services, ConfigLoader configLoader, Logger logger)
         {
-            _commands = commands;
+            _commandService = commands;
             _client = client;
             _services = services;
             _configLoader = configLoader;
@@ -27,13 +28,16 @@ namespace discord_bot.Bot.Commands.CommandHandler
         public async Task InitializeAsync()
         {
             _client.MessageReceived += HandleCommandAsync;
+            _client.Ready += Introduce;
 
             // 1) assembly loads all modules that extends ModuleBase and are annotated with [Command] attribute, 2) services to inject dependencies
-            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+            await _commandService.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
         private async Task HandleCommandAsync(SocketMessage message)
         {
+     
+
             // if the message is not a user message or the author is a bot, ignore it
             if (message is not SocketUserMessage userMessage || message.Author.IsBot)   
                 return;
@@ -44,8 +48,30 @@ namespace discord_bot.Bot.Commands.CommandHandler
             {
                 await _logger.LogAsync(new LogMessage(LogSeverity.Info, "CommandHandler", $"Command {userMessage} received from {userMessage.Author}"));
                 var context = new SocketCommandContext(_client, userMessage);
-                await _commands.ExecuteAsync(context, argPos, _services);
+                await _commandService.ExecuteAsync(context, argPos, _services);
             }
+        }
+
+        private async Task Introduce()
+        {
+            if (_client.GetChannel(_configLoader.MainChannelID) is SocketTextChannel mainChannel)
+            {
+                await mainChannel.SendMessageAsync($"**{_client.CurrentUser.Username} is online!** \nListing available commands:");
+
+                // Iterate over all commands and send them to the channel
+                foreach (var module in _commandService.Modules)
+                {
+                    foreach (var command in module.Commands)
+                    {
+                        var result = await command.CheckPreconditionsAsync(null, _services);
+                        if (result.IsSuccess)
+                        {
+                            await mainChannel.SendMessageAsync($"**{_configLoader.Prefix}{command.Name}** - {command.Summary}");
+                        }
+                    }
+                }
+            }
+            await Task.CompletedTask;
         }
     }
 }

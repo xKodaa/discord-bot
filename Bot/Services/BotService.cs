@@ -14,20 +14,21 @@ namespace discord_bot.Bot.Services
         private readonly ConfigLoader _configLoader;
         private readonly Logger _logger;
         private readonly CommandHandler _commandHandler;
+        private readonly CommandService _commandService;
 
-        public BotService(DiscordSocketClient client, Logger logger, ConfigLoader configLoader, CommandHandler commandHandler)
+        public BotService(DiscordSocketClient client, Logger logger, ConfigLoader configLoader, CommandHandler commandHandler, CommandService commandService)
         {
             _client = client;
             _configLoader = configLoader;
             _logger = logger;
             _commandHandler = commandHandler;
+            _commandService = commandService;
         }
 
         // StartAsync is called when the application starts via await host.RunAsync() in Program class;
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             _client.Log += _logger.LogAsync;
-            _client.Ready += Introduce;
 
             await _commandHandler.InitializeAsync();
 
@@ -41,13 +42,6 @@ namespace discord_bot.Bot.Services
             return _client.StopAsync();
         }
 
-        private async Task Introduce()
-        {
-            if (_client.GetChannel(_configLoader.MainChannelID) is SocketTextChannel mainChannel)
-            {
-                await mainChannel.SendMessageAsync("Gay");
-            }
-            await Task.CompletedTask;
-        }
+
     }
 }

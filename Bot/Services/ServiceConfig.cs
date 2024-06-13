@@ -17,7 +17,7 @@ namespace discord_bot.Bot.Services
             return Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration((context, builder) =>
                 {
-                    builder.SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json");  // inits configuration folder wher appsettings.json is located
+                    builder.SetBasePath(Util.GetDataPath()).AddJsonFile("appsettings.json");  // inits configuration folder wher appsettings.json is located
                 })
                 .ConfigureServices((context, services) =>
                 {
