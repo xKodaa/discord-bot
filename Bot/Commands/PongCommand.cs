@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 
 namespace discord_bot.Bot.Commands
 {
@@ -8,7 +9,8 @@ namespace discord_bot.Bot.Commands
         [Summary("says pong")]
         public async Task PongAsync()
         {
-            await ReplyAsync("pong! demente");
+            var messageReference = new MessageReference(Context.Message.Id);
+            await ReplyAsync("pong! demente", messageReference: messageReference);
         }
     }
 }
