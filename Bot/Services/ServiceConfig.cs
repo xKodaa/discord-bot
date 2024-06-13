@@ -1,5 +1,7 @@
 ﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
+using discord_bot.Bot.Commands.CommandHandler;
 using discord_bot.Bot.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,13 +24,17 @@ namespace discord_bot.Bot.Services
                     {
                         var config = new DiscordSocketConfig
                         {
-                            GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMessages // Only needed intents for my discord bot
+                            // Only needed intents for my discord bot
+                            GatewayIntents = GatewayIntents.Guilds | GatewayIntents.GuildMessages | GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent
                         };
                         return new DiscordSocketClient(config);
                     });
 
                     services.AddSingleton<ConfigLoader>();
                     services.AddSingleton<Logger>();
+                    services.AddSingleton<CommandService>();
+                    services.AddSingleton<CommandHandler>();
+
                     services.AddHostedService<BotService>();
                 })
                 .Build();
