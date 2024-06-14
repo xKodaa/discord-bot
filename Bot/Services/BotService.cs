@@ -41,7 +41,5 @@ namespace discord_bot.Bot.Services
         {
             return _client.StopAsync();
         }
-
-
     }
 }

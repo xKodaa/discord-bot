@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using discord_bot.Bot.Utility;
 using System.Reflection;
+using System.Text;
 
 namespace discord_bot.Bot.Commands.CommandHandler
 {
@@ -13,7 +14,6 @@ namespace discord_bot.Bot.Commands.CommandHandler
         private readonly IServiceProvider _services;
         private readonly ConfigLoader _configLoader;
         private readonly Logger _logger;
-        private bool introduced;
 
         public CommandHandler(DiscordSocketClient client, CommandService commands, IServiceProvider services, ConfigLoader configLoader, Logger logger)
         {
@@ -54,9 +54,12 @@ namespace discord_bot.Bot.Commands.CommandHandler
 
         private async Task Introduce()
         {
-            if (_client.GetChannel(_configLoader.MainChannelID) is SocketTextChannel mainChannel)
+            if (_client.GetChannel(_configLoader.MainChannelID) is SocketTextChannel mainChannel && _client.GetChannel(_configLoader.SecondaryChannelID) is SocketTextChannel secondaryChannel)
             {
-                await mainChannel.SendMessageAsync($"**{_client.CurrentUser.Username} is online!** \nListing available commands:");
+                var messageBuilder = new StringBuilder();
+                messageBuilder.AppendLine($"{Util.GetAppSplitter()}");
+                messageBuilder.AppendLine($"**{_client.CurrentUser.Username} is online!**");
+                messageBuilder.AppendLine("Listing available commands:");
 
                 // Iterate over all commands and send them to the channel
                 foreach (var module in _commandService.Modules)
@@ -66,12 +69,14 @@ namespace discord_bot.Bot.Commands.CommandHandler
                         var result = await command.CheckPreconditionsAsync(null, _services);
                         if (result.IsSuccess)
                         {
-                            await mainChannel.SendMessageAsync($"**{_configLoader.Prefix}{command.Name}** - {command.Summary}");
+                            messageBuilder.AppendLine($"**{_configLoader.Prefix}{command.Name}** - *{command.Summary}*");
                         }
                     }
                 }
+                var finalMessage = messageBuilder.ToString();
+                await mainChannel.SendMessageAsync(finalMessage);
+                //await secondaryChannel.SendMessageAsync(finalMessage);
             }
-            await Task.CompletedTask;
         }
     }
 }

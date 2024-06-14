@@ -25,7 +25,7 @@ namespace discord_bot.Bot.Commands
         public async Task ListCommandsAsync()
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Available commands:");
+            sb.AppendLine("**Available commands:**");
 
             foreach (var module in _commandService.Modules) 
             {
@@ -34,7 +34,7 @@ namespace discord_bot.Bot.Commands
                     var res = await command.CheckPreconditionsAsync(Context);
                     if (res.IsSuccess) 
                     {
-                        sb.AppendLine($"{_configLoader.Prefix}{command.Name} - {command.Summary}");
+                        sb.AppendLine($"**{_configLoader.Prefix}{command.Name}** - _{command.Summary}_");
                     }
                 }
             }

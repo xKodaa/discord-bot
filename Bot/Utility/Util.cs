@@ -8,6 +8,7 @@ namespace discord_bot.Bot.Utility
 {
     public static class Util
     {
+        private static readonly string SPLITTER = "---------------------------------------------------------------";
         public static string GetProjectRoot()
         {
             var currentDirectory = Directory.GetCurrentDirectory();
@@ -19,6 +20,11 @@ namespace discord_bot.Bot.Utility
         {
             var root = GetProjectRoot();
             return Path.Combine(root, "Data");
+        }
+
+        public static string GetAppSplitter()
+        {
+            return SPLITTER;
         }
     }
 }

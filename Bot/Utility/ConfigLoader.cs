@@ -13,6 +13,7 @@ namespace discord_bot.Bot.Utility
         public string Token { get; private set; }
         public string Prefix { get; private set; }
         public ulong MainChannelID { get; private set; }
+        public ulong SecondaryChannelID { get; private set; }
         private readonly Logger _logger;
 
         // Class that loads configuration from appsettings.json
@@ -21,6 +22,7 @@ namespace discord_bot.Bot.Utility
             Token = configuration["TOKEN"] ?? throw new InvalidOperationException("Token is missing in the configuration.");
             Prefix = configuration["PREFIX"] ?? throw new InvalidOperationException("Prefix is missing in the configuration.");
             MainChannelID = ulong.Parse(configuration["MAIN_CHANNEL"] ?? throw new InvalidOperationException("MainChannelID is missing in the configuration."));
+            SecondaryChannelID = ulong.Parse(configuration["SECONDARY_CHANNEL"] ?? throw new InvalidOperationException("SecondaryChannelID is missing in the configuration."));
             
             _logger = logger;
             _logger.LogAsync(new LogMessage(LogSeverity.Info, "ConfigLoader", "Configuration loaded successfully."));
