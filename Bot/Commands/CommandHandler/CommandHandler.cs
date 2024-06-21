@@ -36,8 +36,6 @@ namespace discord_bot.Bot.Commands.CommandHandler
 
         private async Task HandleCommandAsync(SocketMessage message)
         {
-     
-
             // if the message is not a user message or the author is a bot, ignore it
             if (message is not SocketUserMessage userMessage || message.Author.IsBot)   
                 return;
@@ -46,7 +44,7 @@ namespace discord_bot.Bot.Commands.CommandHandler
             // if the message cointains the prefix, execute the command if found in the command list
             if (userMessage.HasStringPrefix(_configLoader.Prefix, ref argPos))
             {
-                await _logger.LogAsync(new LogMessage(LogSeverity.Info, "CommandHandler", $"Command {userMessage} received from {userMessage.Author}"));
+                await _logger.LogAsync(new LogMessage(LogSeverity.Info, "CommandHandler", $"Command '{userMessage}' received from {userMessage.Author}"));
                 var context = new SocketCommandContext(_client, userMessage);
                 await _commandService.ExecuteAsync(context, argPos, _services);
             }

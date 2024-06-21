@@ -7,6 +7,8 @@ namespace discord_bot.Bot.Utility
     public class Logger
     {
         private readonly DiscordSocketClient _client;
+        private readonly string timeStamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
 
         public Logger(DiscordSocketClient client)
         {
@@ -17,7 +19,7 @@ namespace discord_bot.Bot.Utility
         public Task LogAsync(LogMessage message)
         {
             SetConsoleColor(message.Severity);
-            Console.WriteLine($"{DateTime.Now} - [{message.Source}]:\t{message.Message}");
+            Console.WriteLine($"{timeStamp} - [{message.Source}]:\t{message.Message}");
             ResetConsoleColor();
             return Task.CompletedTask;
         }
