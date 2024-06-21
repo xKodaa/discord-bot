@@ -19,7 +19,7 @@ namespace discord_bot.Bot.Utility
         public static string GetDataPath()
         {
             var root = GetProjectRoot();
-            return Path.Combine(root, "Data");
+            return Path.Combine(root, "Application/Data");
         }
 
         public static string GetAppSplitter()
